@@ -1,0 +1,15 @@
+# --- VS code configuration ---
+.vscode/
+
+# --- Compiled binaries (Executable files) ---
+*.exe
+*.out
+
+# --- Object files and Intermediate build files ---
+*.o
+*.obj
+
+# --- Other fles ---
+*.csv
+*.png
+*.jpg
