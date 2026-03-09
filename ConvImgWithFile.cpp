@@ -16,14 +16,15 @@ using namespace Mat;
  * Expected format; Index, Value(0-255)
  */
 bool loadLUTfromCSV(const string& path, Mat& lut){
+    
     ifstream file(path);
     if(!file.is_open()){
         cerr << "Error: Could not open file: " << path << endl;
         return false;
     }
 
-    string line;
     // Skip the header line
+    string line;
     if (!getline(file, line)) return false;
 
     int rowCount = 0;
@@ -44,7 +45,7 @@ bool loadLUTfromCSV(const string& path, Mat& lut){
             if(idx < 0 || idx > 255 || val < 0 || val > 255){
                 // Report the specific invalid value to the user
                 cerr << "Error: Value out of range [0-255] detected." << endl;
-                cerr << "At Row" << (rowcount + 2) << " -> Index: " << idx << ", Value: " << val << endl;
+                cerr << "At Row" << (rowCount + 2) << " -> Index: " << idx << ", Value: " << val << endl;
                 return false;
             }
 
@@ -57,6 +58,8 @@ bool loadLUTfromCSV(const string& path, Mat& lut){
             return false;
         }
     }
+
+    return true;
 
 }
 
