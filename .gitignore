@@ -1,6 +1,10 @@
 # --- VS code configuration ---
 .vscode/
 
+# --- header & library (FTDI drivers)
+include/
+lib/
+
 # --- Compiled binaries (Executable files) ---
 *.exe
 *.out
