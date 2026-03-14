@@ -1,10 +1,9 @@
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <cmath>
 #include <string>
-#include <algorithm>
+#include <vector>
 #include <opencv2/opencv.hpp>
+#include "include/lut_loader.h"
+#include "include/graph_utils.h"
 
 using namespace std;
 using namespace cv;
@@ -16,15 +15,14 @@ using namespace Mat;
  * Expected format; Index, Value(0-255)
  */
 bool loadLUTfromCSV(const string& path, Mat& lut){
-    
     ifstream file(path);
     if(!file.is_open()){
         cerr << "Error: Could not open file: " << path << endl;
         return false;
     }
 
-    // Skip the header line
     string line;
+    // Skip the header line
     if (!getline(file, line)) return false;
 
     int rowCount = 0;
@@ -45,7 +43,7 @@ bool loadLUTfromCSV(const string& path, Mat& lut){
             if(idx < 0 || idx > 255 || val < 0 || val > 255){
                 // Report the specific invalid value to the user
                 cerr << "Error: Value out of range [0-255] detected." << endl;
-                cerr << "At Row" << (rowCount + 2) << " -> Index: " << idx << ", Value: " << val << endl;
+                cerr << "At Row" << (rowcount + 2) << " -> Index: " << idx << ", Value: " << val << endl;
                 return false;
             }
 
@@ -59,8 +57,6 @@ bool loadLUTfromCSV(const string& path, Mat& lut){
         }
     }
 
-    return true;
-
 }
 
 int main(int argc, char* argv[]){
@@ -73,76 +69,61 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
+    string csv_path = argv[1];
+    string img_path = argv[2];
+
+    // 1. LUT & Image Load
+    Mat lut = Mat::zeros(1, 256, CV_8U);
+    if (!loadLUTfromCSV(csv_path, lut)) return -1;
+
+    Mat src = imread(img_path);
+    if (src.empty()) {
+        cerr << "Error: Could not open image." << endl;
+        return -1;
+    }
+
+    // 2. Apply LUT
+    Mat dst;
+    cv::LUT(src, lut, dst);
+
+    // 3. Create Graph (Height: 512px)
+    int h = 512;
+    Mat graph = Mat::ones(h, h, CV_8UC3) * 255;
+    drawToneCurve(graph, lut, Scalar(255, 100, 0)); // Blue line
+
+    // 4. Resize to match Graph Height (Keeping Aspect Ratio)
+    Mat src_res, dst_res;
+    double scale = static_cast<double>(h) / src.rows;
+    resize(src, src_res, Size(), scale, scale, INTER_AREA);
+    resize(dst, dst_res, Size(), scale, scale, INTER_AREA);
+
+    // Ensure all images are 3-channel BGR for concatenation
+    if (src_res.channels() == 1) cvtColor(src_res, src_res, COLOR_GRAY2BGR);
+    if (dst_res.channels() == 1) cvtColor(dst_res, dst_res, COLOR_GRAY2BGR);
+    // graph は既に CV_8UC3 (3チャンネル) で作成しているので変換不要
+
+    // 5. Concatenate Images in Order: [Original | Graph | Processed]
+    // 左端を元の画像にするために、src_res を先頭に配置します
+    Mat combined;
+    vector<Mat> imgs = { src_res, graph, dst_res };
+    hconcat(imgs, combined);
+
+    // 6. Save & Display
+    size_t lastdot = img_path.find_last_of(".");
+    string base = (lastdot == string::npos) ? img_path : img_path.substr(0, lastdot);
     
-    // Get the csv filename. Then copy the date to Mat. 
-    string csv_file_path = argv[1];
-    Mat lut = zeros(1, 256, CV_8U);
-    // Open and check the csv file
-    ifstream file(csv_file_path); 
-    if (!file.is_open()){
-        cerr << "CSV file is not opened!" << endl;
-        return 1;
-    }
-    // Copy the data to Mat
-    string line;
-    getline(file, line); // Ignore header.
-    while (getline(file,line)){
-        stringstream ss(line);
-        string item;
-    }
+    //imwrite(base + "_processed.png", dst);
+    imwrite(base + "_comparison.jpg", combined);
+
+    // ウィンドウ表示
+    namedWindow("Result: Original | Graph | Processed", WINDOW_AUTOSIZE);
+    imshow("Result: Original | Graph | Processed", combined);
     
-
-    for( int i = 0; i < 256 ; i++){
-        // Gamma Correction Formula: Output = (Input /  255)^gamma * 255
-        double normalized = static_cast<double>(i) /  255.0;
-        double corrected = pow(normalized, gamma) *  255.0;
-
-        // Round and clamp to 0-255 using OpenCV's utility
-        uchar result = saturate_cast<uchar>(round(corrected));
-
-        lut[i] = result;
-        ofs << i << "," << static_cast<int>(result) << endl;
-    }
-    ofs.close();
-
-    // Draw the Tone Curve Graph (512*512 pixels)
-    int canvas_size = 512;
-    Mat graph(canvas_size, canvas_size, CV_8UC3, Scalar(255, 255, 255));
-    // Draw reference line (identity mapping: y = x) in light gray
-    line(graph, Point(0, canvas_size), Point(canvas_size, 0), Scalar(220, 220, 220), 1);
-
-    // Plot the curve using line segments
-    for (int i = 0; i < 255; ++i){
-        // Map 0-255 range to canvas size
-        // Note: Y-coordinate is inverted because image (0,0) is top-left
-        Point p1(static_cast<int>(i * (canvas_size / 256.0)), 
-                     static_cast<int>(canvas_size - (lut[i] * (canvas_size / 256.0))));
-        Point p2(static_cast<int>((i + 1) * (canvas_size / 256.0)), 
-                     static_cast<int>(canvas_size - (lut[i + 1] * (canvas_size / 256.0))));
-        
-        // Draw the curve in blue
-        line(graph, p1, p2, Scalar(255, 100, 0), 2, LINE_AA);
-    }
-
-    // Add text info to the graph
-    putText(graph, "Gamma: " + to_string(gamma), Point(20, 40),
-            FONT_HERSHEY_SIMPLEX, 0.7, Scalar(50, 50, 50), 2);
-    putText(graph, "Source: " + csv_name, Point(20, 70),
-            FONT_HERSHEY_SIMPLEX, 0.5, Scalar(150, 150, 150), 1);
-
-    // Save the graph as an image
-    imwrite(img_name, graph);
-
-    // Output summary and Display
     cout << "------------------------------------------" << endl;
-    cout << "Process Complete!" << endl;
-    cout << "CSV Data:     " << csv_name << endl;
-    cout << "Graph Image:  " << img_name << endl;
+    cout << "Layout Order: [Original] -> [Graph] -> [Processed]" << endl;
+    cout << "Saved comparison to: " << base + "_comparison.jpg" << endl;
     cout << "------------------------------------------" << endl;
-    cout << "Opening window. Press any key to exit..." << endl;
 
-    imshow(base_name, graph);
     waitKey(0);
-
     return 0;
 }

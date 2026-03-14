@@ -1,0 +1,98 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram name="ページ-1" id="WzFFlEs14j7B9tAVyUv4">
+    <mxGraphModel dx="1237" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="P9TLOho6vjloNBOZYB9S-1" parent="1" style="ellipse;aspect=fixed;strokeWidth=2;whiteSpace=wrap;" value="開始" vertex="1">
+          <mxGeometry height="47" width="47" x="189" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-2" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="1. 画像ファイルを読み込む&#xa;cv::imread" vertex="1">
+          <mxGeometry height="78" width="255" x="85" y="117" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-3" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="2. CSVからLUTを読み込む&#xa;loadLUTfromCSV" vertex="1">
+          <mxGeometry height="78" width="246" x="90" y="245" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-4" parent="1" style="rhombus;strokeWidth=2;whiteSpace=wrap;" value="正常に&#xa;読み込めたか?" vertex="1">
+          <mxGeometry height="180" width="180" x="123" y="373" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-5" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="エラー表示&#xa;プログラム終了" vertex="1">
+          <mxGeometry height="78" width="172" x="20" y="1035" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-6" parent="1" style="ellipse;aspect=fixed;strokeWidth=2;whiteSpace=wrap;" value="終了" vertex="1">
+          <mxGeometry height="47" width="47" x="189" y="1163" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-7" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="3. LUTを適用する&#xa;cv::LUT" vertex="1">
+          <mxGeometry height="78" width="187" x="226" y="627" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="4. 表示用データの準備&#xa;LUTを帯状にリサイズ / 連結" vertex="1">
+          <mxGeometry height="102" width="260" x="190" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="5. 画面に並べて表示&#xa;Before / LUT / After" vertex="1">
+          <mxGeometry height="78" width="207" x="216" y="907" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="キー入力待機" vertex="1">
+          <mxGeometry height="54" width="156" x="242" y="1047" as="geometry" />
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-11" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-1" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-12" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-2" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-13" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-3" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-4" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-14" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-4" style="curved=1;startArrow=none;endArrow=block;exitX=0.08;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-5" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="106" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-15" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-5" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.27;rounded=0;" target="P9TLOho6vjloNBOZYB9S-6" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="106" y="1138" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-16" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-4" style="curved=1;startArrow=none;endArrow=block;exitX=0.92;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-7" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-17" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-7" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-8" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-18" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-8" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-9" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-19" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-9" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="P9TLOho6vjloNBOZYB9S-10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="P9TLOho6vjloNBOZYB9S-20" edge="1" parent="1" source="P9TLOho6vjloNBOZYB9S-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.27;rounded=0;" target="P9TLOho6vjloNBOZYB9S-6" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="1138" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
