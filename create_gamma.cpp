@@ -14,8 +14,9 @@ int main(int argc, char* argv[]){
     // Check command line arguments
     // Expected: <executable> <gamma_value> <output_filename_without_extension>
     if (argc < 3){
-        cerr << "Usage: " << argv[0] << " <gamma_vlue> <output_name>" << endl;
-        cerr << "Example: " << argv[0] << " 2.2 my_gamma_setting" << endl;
+        cerr << "Usage: " << argv[0] << " <gamma_vlue> <output_filename(first half)>" << endl;
+        cerr << "Example: " << argv[0] << " 2.2 gamma" << endl;
+        cerr << "The filename of the output of example above: gamma_value_2.2" << endl;
         return 1;
     }
 
