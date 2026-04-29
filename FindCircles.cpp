@@ -10,8 +10,11 @@ using namespace std;
 
 int main() {
 
+    // Difine consts
+    const string FILE_NAME = "docs/test8.jpg"; // file name
+    const int IMAGE_HEIGHT = 1000;   // Shown image height in pixel
+
     // Load the image
-    const string FILE_NAME = "docs/test10.jpg";
     Mat img = imread(FILE_NAME);
     if (img.empty()) {
         cerr << "Could not open or find the image file." << endl;
@@ -21,20 +24,21 @@ int main() {
     // Convert to grayscale
     Mat gray;
     cvtColor( img, gray, COLOR_BGR2GRAY);
-
-    // GaussianBlur medianBlur bilateralFilter
-    GaussianBlur(gray, gray, Size(9, 9), 2, 2);
-    //medianBlur(gray, gray, 9);
-    //bilateralFilter(gray, gray, 11, 50, 100);
+    
+    // Pre Processing : GaussianBlur / medianBlur / bilateralFilter
+    Mat gray_processed;
+    GaussianBlur(gray, gray_processed, Size(9, 9), 2, 2);
+    //medianBlur(gray, gray_processed, 9);
+    //bilateralFilter(gray, gray_processed, 11, 50, 100);
 
     // Apply Hough Circle Transform
     // This function detects circles in the binary image
     vector<Vec3f> circles;
-    HoughCircles(gray, circles, HOUGH_GRADIENT_ALT, 
+    HoughCircles(gray_processed, circles, HOUGH_GRADIENT_ALT, 
                 1.5,      // Accumulator resolution
-                90,     // Minimum distance between circle centers
+                30,     // Minimum distance between circle centers
                 50,     // Canny edge detection high threshold
-                0.9,     // Accumulator threshold (lower = more circles detected)
+                1.1,     // Accumulator threshold (lower = more circles detected)
                 50,     // Minimum radius
                 90);    // Maximum radius
 
@@ -48,6 +52,8 @@ int main() {
             circle(result, center, radius, Scalar(0, 0, 255), 2);
             // Draw the circle center
             circle(result, center, 2, Scalar(0, 255, 0), 3);
+            // Put the number on circles
+            putText(result, to_string(i+1), center, FONT_HERSHEY_PLAIN, 4, Scalar(0, 255, 0), 3 );
         }
     
     putText(result, "Number of Circles :" + to_string(circles.size()),
@@ -59,12 +65,23 @@ int main() {
         cout << "No" << i+1 << ": (" << circles[i][0] << "," << circles[i][1] << ") ," << circles[i][2] << endl; 
     }
 
-  
+    // Resize the images
+    Mat grayResized, resultResized;
+    double imgScale = (double)IMAGE_HEIGHT / gray_processed.rows;
+    //resize(gray, grayResized, Size(0,0), imgScale, imgScale);
+    //resize(result, resultResized, Size(0,0), imgScale, imgScale);
+    //cvtColor(grayResized,grayResized, COLOR_GRAY2BGR);
+    cvtColor(gray_processed,gray_processed, COLOR_GRAY2BGR);
+
+    // Concatenate the images horizontally
+    Mat img_cmb;
+    //hconcat(grayResized, resultResized, img_cmb);
+    hconcat(gray_processed, result, img_cmb);
     // Display results
     //imshow("GaussianBlur", gray);
     namedWindow(FILE_NAME, WINDOW_NORMAL);
     resizeWindow(FILE_NAME, 1920, 720);
-    imshow(FILE_NAME, result);
+    imshow(FILE_NAME, img_cmb);
     waitKey(0);
 
     return 0;
