@@ -1,6 +1,4 @@
 
-#include <windows.h>
-#include <shobjidl.h> // IFileOpenDialog
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <vector>
@@ -11,7 +9,7 @@ using namespace std;
 int main() {
 
     // Difine consts
-    const string FILE_NAME = "docs/test19.jpg"; // file name
+    const string FILE_NAME = "docs/test20.jpg"; // file name
     const int IMAGE_HEIGHT = 1000;   // Shown image height in pixel
 
     // Load the image
@@ -68,7 +66,7 @@ int main() {
         double perimeter = arcLength(filtered_contours[i], true);
         if(perimeter > 0){
             double circularity = (4 * CV_PI * area) / (perimeter * perimeter);
-            if (circularity > 0.5){
+            if (circularity > 0.4){
                 final_eyes.push_back(filtered_contours[i]);
             }
         }
