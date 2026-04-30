@@ -11,7 +11,7 @@ using namespace std;
 int main() {
 
     // Difine consts
-    const string FILE_NAME = "docs/test8.jpg"; // file name
+    const string FILE_NAME = "docs/test4.jpg"; // file name
     const int IMAGE_HEIGHT = 1000;   // Shown image height in pixel
 
     // Load the image
@@ -34,11 +34,11 @@ int main() {
     // Apply Hough Circle Transform
     // This function detects circles in the binary image
     vector<Vec3f> circles;
-    HoughCircles(gray_processed, circles, HOUGH_GRADIENT_ALT, 
-                1.5,      // Accumulator resolution
+    HoughCircles(gray_processed, circles, HOUGH_GRADIENT, 
+                1,      // Accumulator resolution
                 30,     // Minimum distance between circle centers
                 50,     // Canny edge detection high threshold
-                1.1,     // Accumulator threshold (lower = more circles detected)
+                30,     // Accumulator threshold (lower = more circles detected)
                 50,     // Minimum radius
                 90);    // Maximum radius
 
