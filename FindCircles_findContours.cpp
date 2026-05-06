@@ -137,13 +137,13 @@ int main() {
 
     
     for (const auto& eye : allEyes) {
-        circle(result_img, eye.center, (int)eye.radius, cv::Scalar(0, 0, 255), 3);
+        circle(result_img, eye.center, (int)eye.radius, Scalar(0, 0, 255), 3);
     
         int s = 10; // Size of Center Closs
-        cv::line(result_img, cv::Point(eye.center.x - s, eye.center.y), 
-                     cv::Point(eye.center.x + s, eye.center.y), cv::Scalar(0, 255, 0), 3);
-        cv::line(result_img, cv::Point(eye.center.x, eye.center.y - s), 
-                     cv::Point(eye.center.x, eye.center.y + s), cv::Scalar(0, 255, 0), 3);
+        line(result_img, Point(eye.center.x - s, eye.center.y), 
+                     Point(eye.center.x + s, eye.center.y), Scalar(0, 255, 0), 3);
+        line(result_img, Point(eye.center.x, eye.center.y - s), 
+                     Point(eye.center.x, eye.center.y + s), Scalar(0, 255, 0), 3);
     }
 
     imshow("Filtererd Contours", result_img); 
