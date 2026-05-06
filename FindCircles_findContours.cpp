@@ -2,6 +2,8 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <vector>
+#include <windows.h>
+#include <commdlg.h>
 
 
 struct EyeData {
@@ -49,16 +51,49 @@ using namespace std;
 
 int main() {
 
-    // Difine consts
-    const string FILE_NAME = "docs/test11.jpg"; // file name
-    const int IMAGE_HEIGHT = 1000;   // Shown image height in pixel
+    // Structure for the Open FIle Dialog
+    OPENFILENAME ofn;
+    char szFile[260];   // Buffer to store the selected file path
+    
+    // Initialize the OPENFILENAME structure
+    ZeroMemory(&ofn, sizeof(ofn));
+    ZeroMemory(szFile, sizeof(szFile));
 
-    // Load the image
-    Mat img = imread(FILE_NAME);
-    if (img.empty()) {
-        cerr << "Could not open or find the image file." << endl;
-        return -1;
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = sizeof(szFile);
+
+    ofn.lpstrFilter = "Images\0*.jpg;*.jpeg;*.png;*.bmp\0All Files\0*.*\0";
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = NULL; // Initial directory (NULL uses the default)
+    
+    /*
+     * Flags:
+     * OFN_PATHMUSTEXIST: User can only type valid paths
+     * OFN_FILEMUSTEXIST: User can only type valid file names
+     * OFN_NOCHANGEDIR: Prevents the dialog from changing the current working directory
+     */
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR; 
+    
+    Mat img;
+    // Display the Open dialog box
+    if (GetOpenFileName(&ofn) == TRUE) {
+        cout << "Selected file path: " << ofn.lpstrFile << endl;
+         img = imread(ofn.lpstrFile, IMREAD_COLOR);
+    
+        if (img.empty()) {
+            cerr << "Error Could not open or find the Image!" << endl;
+            return -1;
+        }
+    } else {
+        // It's safer to exit if no file was selected
+        return 0;
     }
+
+    const int IMAGE_HEIGHT = 1000;   // Shown image height in pixel
 
     // Convert to grayscale
     Mat gray;
@@ -107,7 +142,7 @@ int main() {
         double perimeter = arcLength(filtered_contours[i], true);
         if(perimeter > 0){
             double circularity = (4 * CV_PI * area) / (perimeter * perimeter);
-            if (circularity > 0.4){
+            if (circularity > 0.4) {
                 final_eyes.push_back(filtered_contours[i]);
             }
         }
@@ -146,7 +181,23 @@ int main() {
                      Point(eye.center.x, eye.center.y + s), Scalar(0, 255, 0), 3);
     }
 
-    imshow("Filtererd Contours", result_img); 
+    // Get the actual width of the primary monitor
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int targetX = -1920; // Intended position (e.g., for sub-monitor)
+    // Safety Check: If the target position is beyond the current screen width,
+    // reset it to 0 (primary monitor) to avoid "losting" the window.
+    if (targetX >= screenWidth) {
+        targetX = 0;
+    }
+    // Create a Window with a specific name and manual sizing capability
+    // WINDOW_NOMAL allows you to resize the window
+    namedWindow("Filtered Image", WINDOW_NORMAL);
+    // Move the window to the top-left corner (0,0)
+    moveWindow("Filtered Image", targetX,0);
+    // Set the desired window size (width, height)
+    resizeWindow("Filtered Image", 800, 600);
+
+    imshow("Filtered Image", result_img); 
 
     waitKey(0);
 
