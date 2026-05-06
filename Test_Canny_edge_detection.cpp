@@ -9,7 +9,7 @@ using namespace std;
 int main() {
 
     // Difine consts
-    const string FILE_NAME = "docs/test1.jpg"; // file name
+    const string FILE_NAME = "docs/test18.jpg"; // file name
     const int IMAGE_HEIGHT = 1000;   // Shown image height in pixel
 
     // Load the image

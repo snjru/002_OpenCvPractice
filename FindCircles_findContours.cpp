@@ -3,13 +3,54 @@
 #include <iostream>
 #include <vector>
 
+
+struct EyeData {
+    cv::Point2f center;               // Center of Circle
+    float radius;                     // Radius of Circle
+    std::vector<cv::Point> contour;   // Original Cntoures
+};
+
+// Union-Find (Disjoint Set Union) structure to manage groups of eyes
+struct UnionFind {
+    // parent[i] stores the parent of element i
+    std::vector<int> parent; 
+
+    // Constructor: Initialize n elements, each as its own representative
+    UnionFind(int n) {
+        parent.resize(n);
+        for (int i = 0; i < n; i++) {
+            parent[i] = i; // Initially, every element is its own parent
+        }
+    }
+
+    // Find the representative (root) of the set containing element i
+    // Includes Path Compression for optimization
+    int find(int i) {
+        if (parent[i] == i) return i;
+        // Recursively find the root and attach i directly to it
+        return parent[i] = find(parent[i]); 
+    }
+
+    // Unite two sets containing elements i and j
+    void unite(int i, int j) {
+        int root_i = find(i);
+        int root_j = find(j);
+        // If they belong to different sets, connect the roots
+        if (root_i != root_j) {
+            parent[root_i] = root_j;
+        }
+    }
+};
+
+
 using namespace cv;
 using namespace std;
+
 
 int main() {
 
     // Difine consts
-    const string FILE_NAME = "docs/test4.jpg"; // file name
+    const string FILE_NAME = "docs/test11.jpg"; // file name
     const int IMAGE_HEIGHT = 1000;   // Shown image height in pixel
 
     // Load the image
@@ -74,15 +115,37 @@ int main() {
     cout << "Number of filtered contours : " << filtered_contours.size() << endl;
     cout << "Number of final_eyes : " << final_eyes.size() << endl;
 
+    vector<EyeData> allEyes;
+    for (size_t i = 0; i < final_eyes.size(); i++){
+        EyeData data;
+        data.contour = final_eyes[i]; // Copy Contours
+        minEnclosingCircle(final_eyes[i], data.center, data.radius);
+    
+        allEyes.push_back(data); // 行列（リスト）に追加
+    }
+
     // Show filtered contours on image
     Mat result_img = img.clone();
     drawContours(result_img, filtered_contours, -1, Scalar(0, 255, 0), 2);
     drawContours(result_img, final_eyes, -1, Scalar(255, 0, 0), 2);
+   
+
     putText(result_img, "Number of contours : " + to_string(filtered_contours.size()) , Point(100,120),
         FONT_HERSHEY_PLAIN, 5, Scalar(0, 255, 0), 5 );
     putText(result_img, "Number of eyes : " + to_string(final_eyes.size()) , Point(100,220),
         FONT_HERSHEY_PLAIN, 5, Scalar(255, 0, 0), 5 );
+
     
+    for (const auto& eye : allEyes) {
+        circle(result_img, eye.center, (int)eye.radius, cv::Scalar(0, 0, 255), 3);
+    
+        int s = 10; // Size of Center Closs
+        cv::line(result_img, cv::Point(eye.center.x - s, eye.center.y), 
+                     cv::Point(eye.center.x + s, eye.center.y), cv::Scalar(0, 255, 0), 3);
+        cv::line(result_img, cv::Point(eye.center.x, eye.center.y - s), 
+                     cv::Point(eye.center.x, eye.center.y + s), cv::Scalar(0, 255, 0), 3);
+    }
+
     imshow("Filtererd Contours", result_img); 
 
     waitKey(0);
