@@ -162,7 +162,7 @@ int main() {
 
     // Get the actual width of the primary monitor
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int targetX = 0; // Intended position (e.g., for sub-monitor)
+    int targetX = 100; // Intended position (e.g., for sub-monitor)
     // Safety Check: If the target position is beyond the current screen width,
     // reset it to 0 (primary monitor) to avoid "losting" the window.
     if (targetX >= screenWidth) {
@@ -172,13 +172,13 @@ int main() {
     // WINDOW_NOMAL allows you to resize the window
     string win1 = "After Dilate Image";
     string win2 = "Result Image";
-    int width = 800;
-    int height = 600;
+    int width = 900;
+    int height = 700;
     namedWindow(win1, WINDOW_NORMAL);
     namedWindow(win2, WINDOW_NORMAL);
     // Move the window to the top-left corner (0,0)
-    moveWindow(win1, targetX,0);
-    moveWindow(win2, width,0);
+    moveWindow(win1, targetX,50);
+    moveWindow(win2, targetX+width,50);
     // Set the desired window size (width, height)
     resizeWindow(win1, width, height);
     resizeWindow(win2, width, height);
