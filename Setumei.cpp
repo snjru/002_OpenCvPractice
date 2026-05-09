@@ -60,18 +60,24 @@ int main() {
     
     // Gaussian Blur
     Mat img_blur;
-    GaussianBlur(img_gray, img_blur, Size(9,9), 2, 2);
+    GaussianBlur(img_gray, img_blur, Size(9,9), 10, 10);
     
+    // bilateralFilter
+    Mat img_brtFilter;
+    bilateralFilter(img_gray, img_brtFilter, 0, 60.0, 60.0);
+
     // Convert to binary
-    Mat img_bin;
-    adaptiveThreshold( img_blur, img_bin, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
+    Mat img_bin_1;
+    adaptiveThreshold( img_gray, img_bin_1, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
     Mat img_bin_2;
-    adaptiveThreshold( img_gray, img_bin_2, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
+    adaptiveThreshold( img_blur, img_bin_2, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
+    Mat img_bin_3;
+    adaptiveThreshold( img_brtFilter, img_bin_3, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
 
 
     // Get the actual width of the primary monitor
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int targetX = 100; // Intended position (e.g., for sub-monitor)
+    int targetX = -1600; // Intended position (e.g., for sub-monitor)
     // Safety Check: If the target position is beyond the current screen width,
     // reset it to 0 (primary monitor) to avoid "losting" the window.
     if (targetX >= screenWidth) {
@@ -82,8 +88,10 @@ int main() {
     string win1 = "Original Image";
     string win2 = "Grayscale Image";
     string win3 = "Gaussian Image";
-    string win4 = "Binary Image";
-    string win5 = "Binary2 Image";
+    string win4 = "bilateralFilter Image";
+    string win5 = "Binary Image";
+    string win6 = "Binary2 Image";
+    string win7 = "Binary3 Image";
     
     int width = 450;
     int height = 300;
@@ -92,13 +100,17 @@ int main() {
     namedWindow(win3, WINDOW_NORMAL);
     namedWindow(win4, WINDOW_NORMAL);
     namedWindow(win5, WINDOW_NORMAL);
+    namedWindow(win6, WINDOW_NORMAL);
+    namedWindow(win7, WINDOW_NORMAL);
 
     // Move the window to the top-left corner (0,0)
     moveWindow(win1, targetX,50);
-    moveWindow(win2, targetX + width,50);
-    moveWindow(win3, targetX + (width*2),50);
-    moveWindow(win4, targetX + (width*2) , height+80);
+    moveWindow(win2, targetX + width, 50);
+    moveWindow(win3, targetX + (width*2), 50);
+    moveWindow(win4, targetX + (width*3) , 50);
     moveWindow(win5, targetX + width, height+80);
+    moveWindow(win6, targetX + (width*2), height+80);
+    moveWindow(win7, targetX + (width*3), height+80);
    
     // Set the desired window size (width, height)
     resizeWindow(win1, width, height);
@@ -106,13 +118,17 @@ int main() {
     resizeWindow(win3, width, height);
     resizeWindow(win4, width, height);
     resizeWindow(win5, width, height);
+    resizeWindow(win6, width, height);
+    resizeWindow(win7, width, height);
 
     // Show Images
     imshow(win1, img_original);
     imshow(win2, img_gray);
     imshow(win3, img_blur);
-    imshow(win4, img_bin);
-    imshow(win5, img_bin_2);
+    imshow(win4, img_brtFilter);
+    imshow(win5, img_bin_1);
+    imshow(win6, img_bin_2);
+    imshow(win7, img_bin_3);
 
     waitKey(0);
 
