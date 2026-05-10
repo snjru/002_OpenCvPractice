@@ -56,82 +56,104 @@ int main() {
         
     // Convert to grayscale
     Mat img_gray;
+    Mat img_thrs_gray;
     cvtColor(img_original, img_gray, COLOR_BGR2GRAY);
+    threshold(img_gray, img_thrs_gray, 125,255,THRESH_BINARY);
     
-    // Gaussian Blur
+    //// Blurs
+    // Blur
     Mat img_blur;
-    GaussianBlur(img_gray, img_blur, Size(9,9), 10, 10);
-    
-    
+    Mat img_thrs_blur;
+    blur(img_gray, img_blur, Size(5,5));    
+    threshold(img_blur, img_thrs_blur, 125, 255, THRESH_BINARY);
+    // GaussianBlur
+    Mat img_gaussian_blur;
+    Mat img_thrs_gaussian_blur;
+    GaussianBlur(img_gray, img_gaussian_blur, Size(9,9), 10, 10);
+    threshold(img_gaussian_blur, img_thrs_gaussian_blur, 125, 255, THRESH_BINARY);
+    // medianBlur
+    Mat img_median_blur;
+    Mat img_thrs_median_blur;
+    medianBlur(img_gray, img_median_blur, 5);
+    threshold(img_median_blur, img_thrs_median_blur, 125, 255, THRESH_BINARY);
     // bilateralFilter
-    Mat img_brtFilter;
-    bilateralFilter(img_gray, img_brtFilter, 0, 60.0, 60.0);
+    Mat img_brt_filter;
+    Mat img_thrs_brt_filter;
+    bilateralFilter(img_gray, img_brt_filter, 0, 60.0, 60.0);
+    threshold(img_brt_filter, img_thrs_brt_filter, 125, 255, THRESH_BINARY);
 
-    // Convert to binary
-    Mat img_bin_1;
-    adaptiveThreshold( img_gray, img_bin_1, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
-    Mat img_bin_2;
-    adaptiveThreshold( img_blur, img_bin_2, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
-    Mat img_bin_3;
-    adaptiveThreshold( img_brtFilter, img_bin_3, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,2);
-
-
-    // Get the actual width of the primary monitor
-    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int targetX = -1600; // Intended position (e.g., for sub-monitor)
-    // Safety Check: If the target position is beyond the current screen width,
-    // reset it to 0 (primary monitor) to avoid "losting" the window.
-    if (targetX >= screenWidth) {
-        targetX = 0;
-    }
     // Create a Window with a specific name and manual sizing capability
     // WINDOW_NOMAL allows you to resize the window
     string win1 = "Original Image";
     string win2 = "Grayscale Image";
-    string win3 = "Gaussian Image";
-    string win4 = "bilateralFilter Image";
-    string win5 = "Binary Image";
-    string win6 = "Binary2 Image";
-    string win7 = "Binary3 Image";
+    string win2_t = "Tresholded Grayscale Image";
+    string win3 = "Blur Image";
+    string win3_t = "Tresholded Blur Image";
+    string win4 = "GaussianBlur Image";
+    string win4_t = "Thresholded GaussianBlur Image";
+    string win5 = "MedianBlure Image";
+    string win5_t = "Thresholded MedianBlure Image";
+    string win6 = "BilateralFilter Image";
+    string win6_t = "Thresholded BilateralFilter Image";
     
-    int width = 450;
-    int height = 300;
+    int width = 380;
+    int height = 280;
     namedWindow(win1, WINDOW_NORMAL);
     namedWindow(win2, WINDOW_NORMAL);
+    namedWindow(win2_t, WINDOW_NORMAL);
     namedWindow(win3, WINDOW_NORMAL);
+    namedWindow(win3_t, WINDOW_NORMAL);
     namedWindow(win4, WINDOW_NORMAL);
+    namedWindow(win4_t, WINDOW_NORMAL);
     namedWindow(win5, WINDOW_NORMAL);
+    namedWindow(win5_t, WINDOW_NORMAL);
     namedWindow(win6, WINDOW_NORMAL);
-    namedWindow(win7, WINDOW_NORMAL);
+    namedWindow(win6_t, WINDOW_NORMAL);
 
     // Move the window to the top-left corner (0,0)
-    moveWindow(win1, targetX,50);
-    moveWindow(win2, targetX + width, 50);
-    moveWindow(win3, targetX + (width*2), 50);
-    moveWindow(win4, targetX + (width*3) , 50);
-    moveWindow(win5, targetX + width, height+80);
-    moveWindow(win6, targetX + (width*2), height+80);
-    moveWindow(win7, targetX + (width*3), height+80);
+    int targetX = 0;
+    int y_margin = 100;
+    moveWindow(win1, targetX, 50);
+    moveWindow(win2, targetX, height+y_margin);
+    moveWindow(win2_t, targetX, (height*2)+y_margin);
+    moveWindow(win3, targetX + width, height+y_margin);
+    moveWindow(win3_t, targetX + width, (height*2)+y_margin);
+    moveWindow(win4, targetX + (width*2), height+y_margin);
+    moveWindow(win4_t, targetX + (width*2), (height*2)+y_margin);
+    moveWindow(win5, targetX + (width*3), height+y_margin);
+    moveWindow(win5_t, targetX + (width*3), (height*2)+y_margin);
+    moveWindow(win6, targetX + (width*4), height+y_margin);
+    moveWindow(win6_t, targetX + (width*4), (height*2)+y_margin);
    
     // Set the desired window size (width, height)
     resizeWindow(win1, width, height);
     resizeWindow(win2, width, height);
+    resizeWindow(win2_t, width, height);
     resizeWindow(win3, width, height);
+    resizeWindow(win3_t, width, height);
     resizeWindow(win4, width, height);
+    resizeWindow(win4_t, width, height);
     resizeWindow(win5, width, height);
+    resizeWindow(win5_t, width, height);
     resizeWindow(win6, width, height);
-    resizeWindow(win7, width, height);
+    resizeWindow(win6_t, width, height);
 
     // Show Images
     imshow(win1, img_original);
     imshow(win2, img_gray);
+    imshow(win2_t, img_thrs_gray);
     imshow(win3, img_blur);
-    imshow(win4, img_brtFilter);
-    imshow(win5, img_bin_1);
-    imshow(win6, img_bin_2);
-    imshow(win7, img_bin_3);
+    imshow(win3_t, img_thrs_blur);
+    imshow(win4, img_gaussian_blur);
+    imshow(win4_t, img_thrs_gaussian_blur);
+    imshow(win5, img_median_blur);
+    imshow(win5_t, img_thrs_median_blur);
+    imshow(win6, img_brt_filter);
+    imshow(win6_t, img_thrs_brt_filter);
 
     waitKey(0);
+    
+    destroyAllWindows();
 
     return 0;
 
