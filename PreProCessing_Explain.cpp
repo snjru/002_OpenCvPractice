@@ -62,6 +62,7 @@ int main() {
     Mat img_blur;
     GaussianBlur(img_gray, img_blur, Size(9,9), 10, 10);
     
+    
     // bilateralFilter
     Mat img_brtFilter;
     bilateralFilter(img_gray, img_brtFilter, 0, 60.0, 60.0);
