@@ -51,36 +51,36 @@ int main() {
         return 0;
     }
     
-
+    
     //// Image Preprocessing
-    int value_thresh = 120;        
+    int value_C = 5;        
     // Convert to grayscale
     Mat img_gray;
     Mat img_thrs_gray;
     cvtColor(img_original, img_gray, COLOR_BGR2GRAY);
-    threshold(img_gray, img_thrs_gray, value_thresh, 255, THRESH_BINARY);
+    adaptiveThreshold(img_gray, img_thrs_gray, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11 ,value_C);
     
     //// Blurs
     // Blur
     Mat img_blur;
     Mat img_thrs_blur;
     blur(img_gray, img_blur, Size(5,5));    
-    threshold(img_blur, img_thrs_blur, value_thresh, 255, THRESH_BINARY);
+    adaptiveThreshold(img_blur, img_thrs_blur, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11, value_C);
     // GaussianBlur
     Mat img_gaussian_blur;
     Mat img_thrs_gaussian_blur;
     GaussianBlur(img_gray, img_gaussian_blur, Size(9,9), 10, 10);
-    threshold(img_gaussian_blur, img_thrs_gaussian_blur, value_thresh, 255, THRESH_BINARY);
+    adaptiveThreshold(img_gaussian_blur, img_thrs_gaussian_blur, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11, value_C);
     // medianBlur
     Mat img_median_blur;
     Mat img_thrs_median_blur;
     medianBlur(img_gray, img_median_blur, 5);
-    threshold(img_median_blur, img_thrs_median_blur, value_thresh, 255, THRESH_BINARY);
+    adaptiveThreshold(img_median_blur, img_thrs_median_blur, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11, value_C);
     // bilateralFilter
     Mat img_brt_filter;
     Mat img_thrs_brt_filter;
     bilateralFilter(img_gray, img_brt_filter, 0, 60.0, 60.0);
-    threshold(img_brt_filter, img_thrs_brt_filter, value_thresh, 255, THRESH_BINARY);
+    adaptiveThreshold(img_brt_filter, img_thrs_brt_filter, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 11, value_C);
 
     // Create a Window with a specific name and manual sizing capability
     // WINDOW_NOMAL allows you to resize the window
